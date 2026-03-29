@@ -1,4 +1,4 @@
-const STORAGE_KEY = "portfolio_projects_v2";
+const STORAGE_KEY = "portfolio_projects_v3";
 const CHATBOT_PROJECT_TITLE = "AI Chatbot Assistant";
 
 const sampleProjects = [
