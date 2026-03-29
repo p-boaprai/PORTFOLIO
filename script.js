@@ -4,27 +4,6 @@ const CHATBOT_PROJECT_TITLE = "AI Chatbot Assistant";
 const sampleProjects = [
   {
     id: crypto.randomUUID(),
-    title: "Personal Dashboard",
-    description: "A dashboard for tasks, weather, and daily habits.",
-    tech: ["HTML", "CSS", "JavaScript"],
-    imageUrl:
-      "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1400&q=80",
-    videoUrl: "",
-    githubUrl: "",
-    liveUrl: "",
-  },
-  {
-    id: crypto.randomUUID(),
-    title: "Game Prototype",
-    description: "A quick browser game prototype with score tracking.",
-    tech: ["Canvas", "JavaScript"],
-    imageUrl: "",
-    videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-    githubUrl: "",
-    liveUrl: "",
-  },
-  {
-    id: crypto.randomUUID(),
     title: CHATBOT_PROJECT_TITLE,
     description: "A fully functioning conversational chatbot with real-time user interaction. The chatbot is given a sarcastic and crass personality which allows it to ridicule the user in case of spelling mistakes and also allows it to deny answering a question if it is asked 3 or more times.",
     tech: ["Python", "LLM API", "UI/UX"],
@@ -43,9 +22,8 @@ const projectForm = document.getElementById("project-form");
 const resetBtn = document.getElementById("reset-projects");
 const yearEl = document.getElementById("year");
 
-const seeded = seedChatbotProject();
-const synced = syncChatbotProjectFromSample();
-if (seeded || synced) {
+const normalized = keepOnlyChatbotProject();
+if (normalized) {
   saveProjects();
 }
 
@@ -144,6 +122,30 @@ function syncChatbotProjectFromSample() {
   if (!changed) return false;
 
   projects[currentIndex] = next;
+  return true;
+}
+
+function keepOnlyChatbotProject() {
+  const sample = sampleProjects.find((project) => project.title === CHATBOT_PROJECT_TITLE);
+  if (!sample) return false;
+
+  const existing = projects.find((project) => project.title === CHATBOT_PROJECT_TITLE);
+  const nextProject = existing
+    ? {
+        ...existing,
+        description: sample.description,
+        tech: structuredClone(sample.tech),
+        imageUrl: sample.imageUrl,
+        videoUrl: sample.videoUrl,
+        liveUrl: sample.liveUrl,
+      }
+    : structuredClone(sample);
+
+  const nextProjects = [nextProject];
+  const changed = JSON.stringify(projects) !== JSON.stringify(nextProjects);
+  if (!changed) return false;
+
+  projects = nextProjects;
   return true;
 }
 
